@@ -3,7 +3,7 @@ project(M1Libraries2 LANGUAGES CXX)
 
 find_package(Catch2 3 REQUIRED)
 
-list(APPEND _testSources Timer/test/test.cpp Random/test/test.cpp)
+list(APPEND _testSources Timer/test/test.cpp Random/test/test.cpp Logger/test/test.cpp)
 
 add_executable(M1Libraries2_Test ${_testSources})
 
