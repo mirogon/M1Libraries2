@@ -73,3 +73,8 @@ TEST_CASE("LogDestionationAtZeroEqualsAddedDefaultConsoleLogDestination"){
     logger.AddLogDestination(logDest);
     REQUIRE(logger.LogDestinations().at(0).get() == logDest.get());
 }
+
+TEST_CASE("LogWorksWithStringRValue"){
+    m1::Logger logger;
+    logger.Log("Hello C String log");
+}

@@ -13,6 +13,14 @@ namespace m1{
             logMessage = message;
         }
 
+        Log(std::string&& message){
+            logMessage = message;
+        }
+
+        Log(const char* msg){
+            logMessage = std::string(msg);
+        }
+
         const std::string& Message(){
             return logMessage;
         }
