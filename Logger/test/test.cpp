@@ -1,6 +1,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include "../include/Logger.h"
+#include "../include/ConsoleLogDestination.h"
+#include "../include/FileLogDestination.h"
 #include <memory>
+#include <filesystem>
 
 class TestLogDestination : public m1::ILogDestination{
     public:
@@ -67,12 +70,26 @@ TEST_CASE("NoLogDestinationsAfterRemoving"){
     REQUIRE(logger.LogDestinations().size() == 0);
 }
 
-TEST_CASE("LogDestionationAtZeroEqualsAddedDefaultConsoleLogDestination"){
+TEST_CASE("LogDestionationAtZeroEqualsAddedConsoleLogDestination"){
     m1::Logger logger;
-    std::shared_ptr<m1::ILogDestination> logDest(m1::Logger::DefaultConsoleLogDestination());
+    std::shared_ptr<m1::ILogDestination> logDest = std::make_shared<ConsoleLogDestination>(ConsoleLogDestination());
     logger.AddLogDestination(logDest);
     REQUIRE(logger.LogDestinations().at(0).get() == logDest.get());
 }
+
+TEST_CASE("FileExistsAfterLoggingToFileLogDestination"){
+    std::filesystem::remove("test.log");
+    m1::Logger logger;
+    std::shared_ptr<m1::ILogDestination> logDest = std::make_shared<FileLogDestination>(FileLogDestination("test.log"));
+    logger.AddLogDestination(logDest);
+    logger.Log("Hello, there");
+
+    REQUIRE(std::filesystem::exists("test.log") == true);
+
+    std::filesystem::remove("test.log");
+}
+
+
 
 TEST_CASE("LogWorksWithStringRValue"){
     m1::Logger logger;

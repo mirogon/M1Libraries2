@@ -28,12 +28,6 @@ namespace m1{
         std::vector<std::shared_ptr<ILogDestination>> LogDestinations(){
            return logDestinations;
         }
-
-        static std::shared_ptr<ILogDestination> DefaultConsoleLogDestination(){
-            return std::shared_ptr<ILogDestination>(new ConsoleLogDestination());
-
-        }
-
         private:
 
         std::vector<std::shared_ptr<ILogDestination>> logDestinations;
