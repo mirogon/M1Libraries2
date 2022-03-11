@@ -89,6 +89,24 @@ TEST_CASE("FileExistsAfterLoggingToFileLogDestination"){
     std::filesystem::remove("test.log");
 }
 
+TEST_CASE("FileContentEqualsLogString"){
+    std::filesystem::remove("test.log");
+    m1::Logger logger;
+    std::shared_ptr<m1::ILogDestination> logDest = std::make_shared<FileLogDestination>(FileLogDestination("test.log"));
+    logger.AddLogDestination(logDest);
+    logger.Log("Hello, there");
+
+    std::string readContent = "";
+    std::fstream fileStream = std::fstream("test.log", std::ios::in);
+    std::getline(fileStream, readContent);
+    fileStream.close();
+
+    REQUIRE("Hello, there" == readContent);
+
+    std::filesystem::remove("test.log");
+
+}
+
 
 
 TEST_CASE("LogWorksWithStringRValue"){
