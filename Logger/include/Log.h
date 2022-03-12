@@ -2,31 +2,34 @@
 #include <string>
 
 namespace m1{
+    
+    enum class LogLevel{
+        NONE = 0,
+        WARNING = 2,
+        ERROR = 3
+    };
+
     class Log{
         public:
 
-        Log(){
-            logMessage = "";
-        }
+        Log() = delete;
 
-        Log(const std::string& message){
-            logMessage = message;
+        Log(const std::string& message, LogLevel level = LogLevel::NONE ){
+            this->message = message;
+            this->level = level;
         }
-
-        Log(std::string&& message){
-            logMessage = message;
-        }
-
-        Log(const char* msg){
-            logMessage = std::string(msg);
-        }
-
+        
         const std::string& Message(){
-            return logMessage;
+            return message;
+        }
+
+        LogLevel Level(){
+            return level;
         }
 
         private:
 
-        std::string logMessage;
+        std::string message;
+        LogLevel level;
     };
 }

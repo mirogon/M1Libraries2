@@ -19,16 +19,29 @@ namespace m1{
             }
         }
 
-        void Log(Log log){
-            for(int i = 0; i < logDestinations.size(); ++i){
-                logDestinations[i]->Log(log);
-            }
+        void Log(const std::string& message){
+            LogImpl(message, m1::LogLevel::NONE);
+        }
+
+        void LogWarning(const std::string& message){
+            LogImpl(message, m1::LogLevel::WARNING);
+        }
+
+        void LogError(const std::string& message){
+            LogImpl(message, m1::LogLevel::ERROR);
         }
 
         std::vector<std::shared_ptr<ILogDestination>> LogDestinations(){
            return logDestinations;
         }
         private:
+
+        void LogImpl(const std::string& message, m1::LogLevel level){
+            m1::Log log = m1::Log(message, level);
+            for(int i = 0; i < logDestinations.size(); ++i){
+                logDestinations[i]->Log(log);
+            }
+        }
 
         std::vector<std::shared_ptr<ILogDestination>> logDestinations;
     };

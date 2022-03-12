@@ -46,7 +46,7 @@ TEST_CASE("LogCallsLogDestinationLog"){
     m1::Logger logger;
     std::shared_ptr<m1::ILogDestination> logDest(new TestLogDestination());
     logger.AddLogDestination(logDest);
-    logger.Log(m1::Log());
+    logger.Log("");
     TestLogDestination* tld = dynamic_cast<TestLogDestination*>(logDest.get());
     REQUIRE(tld->logs.size() == 1);
 }
@@ -56,7 +56,7 @@ TEST_CASE("LogMessageIsSameAsLogArgument"){
     std::shared_ptr<m1::ILogDestination> logDest(new TestLogDestination());
     logger.AddLogDestination(logDest);
     std::string logMsg = "Hello, There!";
-    logger.Log(m1::Log(logMsg));
+    logger.Log(logMsg);
     TestLogDestination* tld = dynamic_cast<TestLogDestination*>(logDest.get());
     REQUIRE(tld->logs.back().Message() == logMsg);
     REQUIRE_FALSE(tld->logs.back().Message() == "NotRight");
@@ -104,12 +104,23 @@ TEST_CASE("FileContentEqualsLogString"){
     REQUIRE("Hello, there" == readContent);
 
     std::filesystem::remove("test.log");
-
 }
 
-
-
-TEST_CASE("LogWorksWithStringRValue"){
+TEST_CASE("LogLevelEqualsLogFunc"){
+    std::shared_ptr<TestLogDestination> logDest = std::make_shared<TestLogDestination>(TestLogDestination());
     m1::Logger logger;
-    logger.Log("Hello C String log");
+    logger.AddLogDestination(logDest);
+
+    logger.Log("Info log");
+    REQUIRE(logDest->logs.back().Level() == m1::LogLevel::NONE);
+
+    logger.LogWarning("Warning log");
+    REQUIRE(logDest->logs.back().Level() == m1::LogLevel::WARNING);
+
+    logger.LogError("Error log");
+    REQUIRE(logDest->logs.back().Level() == m1::LogLevel::ERROR);
+}
+
+TEST_CASE(""){
+    REQUIRE(logDest->logs.back().Timestamp().ToString() == "07:00 26/07/1999");
 }
