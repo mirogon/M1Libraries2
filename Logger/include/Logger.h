@@ -1,7 +1,7 @@
 #pragma once
-#include "ILogDestination.h"
-#include "ConsoleLogDestination.h"
-#include "StdTimeSource.h"
+#include "LogDestination/ILogDestination.h"
+#include "LogDestination/ConsoleLogDestination.h"
+#include "TimeSource/StdTimeSource.h"
 
 namespace m1{
     class Logger{

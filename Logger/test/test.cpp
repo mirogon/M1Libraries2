@@ -3,9 +3,9 @@
 #include <chrono>
 #include <filesystem>
 #include "../include/Logger.h"
-#include "../include/ConsoleLogDestination.h"
-#include "../include/FileLogDestination.h"
-#include "../include/ITimeSource.h"
+#include "../include/LogDestination/ConsoleLogDestination.h"
+#include "../include/LogDestination/FileLogDestination.h"
+#include "../include/TimeSource/ITimeSource.h"
 
 class TestLogDestination : public m1::ILogDestination{
     public:
@@ -133,7 +133,6 @@ TEST_CASE("TestConsoleLog"){
     logger.AddLogDestination(logDest);
 
     std::shared_ptr<FileLogDestination> fileLogDest = std::make_shared<FileLogDestination>("test2.log");
-
     logger.AddLogDestination(fileLogDest);
 
     logger.Log("This is some log");

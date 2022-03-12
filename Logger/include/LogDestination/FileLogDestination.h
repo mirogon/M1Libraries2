@@ -1,7 +1,7 @@
 #pragma once
-#include "ILogDestination.h"
-#include "Log.h"
 #include <fstream>
+#include "ILogDestination.h"
+#include "../Log.h"
 
 class FileLogDestination : public m1::ILogDestination{
 
