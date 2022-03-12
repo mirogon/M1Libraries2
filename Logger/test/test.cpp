@@ -1,9 +1,11 @@
 #include <catch2/catch_test_macros.hpp>
+#include <memory>
+#include <chrono>
+#include <filesystem>
 #include "../include/Logger.h"
 #include "../include/ConsoleLogDestination.h"
 #include "../include/FileLogDestination.h"
-#include <memory>
-#include <filesystem>
+#include "../include/ITimeSource.h"
 
 class TestLogDestination : public m1::ILogDestination{
     public:
@@ -17,23 +19,6 @@ class TestLogDestination : public m1::ILogDestination{
 
     std::vector<m1::Log> logs;
 };
-
-TEST_CASE("NewLoggerIsValid"){
-    m1::Logger logger;
-    REQUIRE_FALSE(&logger == nullptr);
-}
-
-TEST_CASE("LogMessageEqualsConstructorArgument"){
-    std::string msg = "This is a log message!";
-    m1::Log log(msg);
-    REQUIRE(log.Message() == msg);
-    REQUIRE_FALSE(log.Message() == "NotRight");
-}
-
-TEST_CASE("CreateTestLogDestination"){
-    m1::ILogDestination* logDest = new TestLogDestination();
-    REQUIRE_FALSE(logDest == nullptr);
-}
 
 TEST_CASE("LogDestinationSizeIsOneAfterAddingOne"){
     m1::Logger logger;
@@ -53,13 +38,13 @@ TEST_CASE("LogCallsLogDestinationLog"){
 
 TEST_CASE("LogMessageIsSameAsLogArgument"){
     m1::Logger logger;
-    std::shared_ptr<m1::ILogDestination> logDest(new TestLogDestination());
+    std::shared_ptr<TestLogDestination> logDest(new TestLogDestination());
     logger.AddLogDestination(logDest);
-    std::string logMsg = "Hello, There!";
-    logger.Log(logMsg);
-    TestLogDestination* tld = dynamic_cast<TestLogDestination*>(logDest.get());
-    REQUIRE(tld->logs.back().Message() == logMsg);
-    REQUIRE_FALSE(tld->logs.back().Message() == "NotRight");
+
+    logger.Log("Hello, there!");
+
+    REQUIRE(logDest->logs.back().Message() == "Hello, there!");
+    REQUIRE_FALSE(logDest->logs.back().Message() == "NotRight");
 }
 
 TEST_CASE("NoLogDestinationsAfterRemoving"){
@@ -121,6 +106,62 @@ TEST_CASE("LogLevelEqualsLogFunc"){
     REQUIRE(logDest->logs.back().Level() == m1::LogLevel::ERROR);
 }
 
-TEST_CASE(""){
-    REQUIRE(logDest->logs.back().Timestamp().ToString() == "07:00 26/07/1999");
+
+class TestTimeSource : public ITimeSource{
+    public:
+
+    TestTimeSource(int year, int month, int day, int hour){
+        this->year = year;
+        this->month = month;
+        this->day = day;
+        this->hour = hour;
+    }
+
+    Timestamp CurrentTime(){
+        Timestamp t(year, month, day, hour, 0);
+        return t;
+    }
+
+    int year;
+    int month;
+    int day;
+    int hour;
+};
+
+TEST_CASE("TimestampToStringEqualsLogtime"){
+    std::shared_ptr<ITimeSource> timeSource = std::make_shared<TestTimeSource>(TestTimeSource(1999, 7, 26, 7));
+    m1::Logger logger(timeSource);
+
+    std::shared_ptr<TestLogDestination> logDest = std::make_shared<TestLogDestination>();
+    logger.AddLogDestination(logDest);
+
+    logger.Log("");
+
+    REQUIRE(logDest->logs.back().Time().ToString() == "26/07/1999 7:00am");
+}
+
+TEST_CASE("StdTimestampCurrentTimeEqualsCurrentTime"){
+    std::chrono::system_clock::time_point currentTime = std::chrono::system_clock::now();
+    std::time_t time = std::chrono::system_clock::to_time_t(currentTime);
+    tm* localTime = std::localtime(&time);
+
+    StdTimeSource timeSource;
+
+    REQUIRE(localTime->tm_year + 1900 == timeSource.CurrentTime().Year());
+    REQUIRE(localTime->tm_mon + 1 == timeSource.CurrentTime().Month());
+    REQUIRE(localTime->tm_mday == timeSource.CurrentTime().Day());
+    REQUIRE(localTime->tm_hour == timeSource.CurrentTime().Hour());
+    REQUIRE(localTime->tm_min == timeSource.CurrentTime().Minute());
+}
+
+TEST_CASE("TestConsoleLog"){
+    std::shared_ptr<ITimeSource> timeSource = std::make_shared<StdTimeSource>();
+    m1::Logger logger(timeSource);
+
+    std::shared_ptr<ConsoleLogDestination> logDest = std::make_shared<ConsoleLogDestination>();
+    logger.AddLogDestination(logDest);
+
+    logger.Log("This is some log");
+    logger.LogWarning("This is some warning log");
+    logger.LogError("This is some error log");
 }

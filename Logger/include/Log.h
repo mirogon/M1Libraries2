@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "Timestamp.h"
 
 namespace m1{
     
@@ -9,12 +10,22 @@ namespace m1{
         ERROR = 3
     };
 
+    inline std::string LogLevelToString(LogLevel l){
+        switch(l){
+            case LogLevel::NONE: return "None";
+            case LogLevel::WARNING: return "Warning";
+            case LogLevel::ERROR: return "Error";
+        }
+    }
+
     class Log{
         public:
 
         Log() = delete;
 
-        Log(const std::string& message, LogLevel level = LogLevel::NONE ){
+        Log(const std::string& message, Timestamp timeStamp, LogLevel level = LogLevel::NONE):
+            timeStamp{timeStamp}
+        {
             this->message = message;
             this->level = level;
         }
@@ -27,9 +38,14 @@ namespace m1{
             return level;
         }
 
+        Timestamp Time(){
+            return timeStamp;
+        }
+
         private:
 
         std::string message;
         LogLevel level;
+        Timestamp timeStamp;
     };
 }
