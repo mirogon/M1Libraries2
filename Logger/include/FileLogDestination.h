@@ -13,8 +13,8 @@ class FileLogDestination : public m1::ILogDestination{
     }
 
     void Log(m1::Log l){
-        std::fstream fileStream = std::fstream(file.c_str(), std::ios::out);
-        fileStream<<l.Message()<<std::endl;
+        std::fstream fileStream = std::fstream(file.c_str(), std::ios::out | std::ios::app);
+        fileStream<<l.Time().ToString() << " | " << m1::LogLevelToString(l.Level()) << " | " <<l.Message()<<std::endl;
         fileStream.flush();
         fileStream.close();
     }

@@ -8,9 +8,9 @@ class StdTimeSource : public ITimeSource{
     Timestamp CurrentTime(){
         auto currentTime = std::chrono::system_clock::now();
 		std::time_t time_t_time = std::chrono::system_clock::to_time_t(currentTime);
-		tm* utcTime = std::gmtime(&time_t_time);
+		tm* localTime = std::localtime(&time_t_time);
 
-        Timestamp timeStamp(utcTime->tm_year + 1900, utcTime->tm_mon +1 , utcTime->tm_mday, utcTime->tm_hour, utcTime->tm_min);
+        Timestamp timeStamp(localTime->tm_year + 1900, localTime->tm_mon +1 , localTime->tm_mday, localTime->tm_hour, localTime->tm_min);
         return timeStamp;
     }
 };

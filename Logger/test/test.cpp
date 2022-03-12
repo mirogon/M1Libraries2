@@ -62,35 +62,6 @@ TEST_CASE("LogDestionationAtZeroEqualsAddedConsoleLogDestination"){
     REQUIRE(logger.LogDestinations().at(0).get() == logDest.get());
 }
 
-TEST_CASE("FileExistsAfterLoggingToFileLogDestination"){
-    std::filesystem::remove("test.log");
-    m1::Logger logger;
-    std::shared_ptr<m1::ILogDestination> logDest = std::make_shared<FileLogDestination>(FileLogDestination("test.log"));
-    logger.AddLogDestination(logDest);
-    logger.Log("Hello, there");
-
-    REQUIRE(std::filesystem::exists("test.log") == true);
-
-    std::filesystem::remove("test.log");
-}
-
-TEST_CASE("FileContentEqualsLogString"){
-    std::filesystem::remove("test.log");
-    m1::Logger logger;
-    std::shared_ptr<m1::ILogDestination> logDest = std::make_shared<FileLogDestination>(FileLogDestination("test.log"));
-    logger.AddLogDestination(logDest);
-    logger.Log("Hello, there");
-
-    std::string readContent = "";
-    std::fstream fileStream = std::fstream("test.log", std::ios::in);
-    std::getline(fileStream, readContent);
-    fileStream.close();
-
-    REQUIRE("Hello, there" == readContent);
-
-    std::filesystem::remove("test.log");
-}
-
 TEST_CASE("LogLevelEqualsLogFunc"){
     std::shared_ptr<TestLogDestination> logDest = std::make_shared<TestLogDestination>(TestLogDestination());
     m1::Logger logger;
@@ -160,6 +131,10 @@ TEST_CASE("TestConsoleLog"){
 
     std::shared_ptr<ConsoleLogDestination> logDest = std::make_shared<ConsoleLogDestination>();
     logger.AddLogDestination(logDest);
+
+    std::shared_ptr<FileLogDestination> fileLogDest = std::make_shared<FileLogDestination>("test2.log");
+
+    logger.AddLogDestination(fileLogDest);
 
     logger.Log("This is some log");
     logger.LogWarning("This is some warning log");
