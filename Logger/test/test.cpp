@@ -139,3 +139,16 @@ TEST_CASE("TestConsoleLog"){
     logger.LogWarning("This is some warning log");
     logger.LogError("This is some error log");
 }
+
+TEST_CASE("FileLogDestinationInvalidFileNameThrowsException"){
+    m1::Logger logger;
+    std::shared_ptr<FileLogDestination> fileLogDest = std::make_shared<FileLogDestination>("<>:**");
+    logger.AddLogDestination(fileLogDest);
+
+    REQUIRE_THROWS(logger.Log("This should not be logged cause of an error"));
+}
+
+TEST_CASE("ExtremeValuesTimestampToStringDoesntThrow"){
+    Timestamp t(INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX);
+    REQUIRE_NOTHROW(t.ToString());
+}

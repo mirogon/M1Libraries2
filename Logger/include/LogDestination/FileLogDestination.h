@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <iostream>
 #include "ILogDestination.h"
 #include "../Log.h"
 
@@ -13,8 +14,12 @@ class FileLogDestination : public m1::ILogDestination{
     }
 
     void Log(m1::Log l){
-        std::fstream fileStream = std::fstream(file.c_str(), std::ios::out | std::ios::app);
+        std::fstream fileStream;
+        fileStream.exceptions(std::fstream::failbit | std::fstream::badbit);
+        fileStream.open(file.c_str(), std::ios::out | std::ios::app);
+
         fileStream<<l.Time().ToString() << " | " << m1::LogLevelToString(l.Level()) << " | " <<l.Message()<<std::endl;
+
         fileStream.flush();
         fileStream.close();
     }

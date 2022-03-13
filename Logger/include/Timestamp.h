@@ -7,7 +7,7 @@ class Timestamp{
 
     Timestamp() = delete;
 
-    Timestamp(int year, int month, int day, int hour, int minute){
+    Timestamp(unsigned int year, unsigned int month, unsigned int day, unsigned int hour, unsigned int minute){
         this->year = year;
         this->month = month;
         this->day = day;
@@ -30,31 +30,31 @@ class Timestamp{
         return ss.str();
     }
 
-    int Year(){
+    unsigned int Year(){
         return year;
     }
 
-    int Month(){
+    unsigned int Month(){
         return month;
     }
 
-    int Day(){
+    unsigned int Day(){
         return day;
     }
 
-    int Hour(){
+    unsigned int Hour(){
         return hour;
     }
 
-    int Minute(){
+    unsigned int Minute(){
         return minute;
     }
 
     private:
 
-    int year; 
-    int month;
-    int day;
-    int hour;
-    int minute;
+    unsigned int year; 
+    unsigned int month;
+    unsigned int day;
+    unsigned int hour;
+    unsigned int minute;
 };
