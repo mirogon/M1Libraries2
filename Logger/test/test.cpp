@@ -1,8 +1,10 @@
 #include <catch2/catch_test_macros.hpp>
 #include <memory>
 #include <chrono>
+#include <thread>
 #include <filesystem>
 #include "../include/Logger.h"
+#include "../include/LogDestination/ILogDestination.h"
 #include "../include/LogDestination/ConsoleLogDestination.h"
 #include "../include/LogDestination/FileLogDestination.h"
 #include "../include/TimeSource/ITimeSource.h"
@@ -151,4 +153,41 @@ TEST_CASE("FileLogDestinationInvalidFileNameThrowsException"){
 TEST_CASE("ExtremeValuesTimestampToStringDoesntThrow"){
     Timestamp t(INT_MAX, INT_MAX, INT_MAX, INT_MAX, INT_MAX);
     REQUIRE_NOTHROW(t.ToString());
+}
+
+TEST_CASE("LogIsThreadSafe"){
+    std::shared_ptr<ITimeSource> timeSource = std::make_shared<TestTimeSource>(2022, 3, 14, 8);
+    m1::Logger logger(timeSource);
+
+    std::shared_ptr<m1::ILogDestination> logDest = std::make_shared<FileLogDestination>("thread.log");
+    logger.AddLogDestination(logDest);
+
+    std::thread t1([&logger](){
+        logger.Log("HelloThere");
+    });
+
+    std::thread t2([&logger](){
+        logger.Log("GeneralKenobi");
+    });
+
+    std::thread t3([&logger](){
+        logger.Log("AdditionToMyCollection");
+    });
+
+    t3.join();
+    t2.join();
+    t1.join();
+
+    std::string logString = "";
+    std::fstream fileStream("thread.log", std::ios::in);
+    std::getline(fileStream, logString, '\0');
+    fileStream.flush();
+    fileStream.close();
+
+    REQUIRE_FALSE(std::string::npos == logString.find("14/03/2022 8:00am | None | HelloThere"));
+    REQUIRE_FALSE(std::string::npos == logString.find("14/03/2022 8:00am | None | GeneralKenobi"));
+    REQUIRE_FALSE(std::string::npos == logString.find("14/03/2022 8:00am | None | AdditionToMyCollection"));
+    REQUIRE(3 ==  std::count(logString.begin(), logString.end(), '\n'));
+
+    std::filesystem::remove("thread.log");
 }

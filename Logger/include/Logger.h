@@ -1,4 +1,6 @@
 #pragma once
+#include <thread>
+#include <mutex>
 #include "LogDestination/ILogDestination.h"
 #include "LogDestination/ConsoleLogDestination.h"
 #include "TimeSource/StdTimeSource.h"
@@ -42,12 +44,14 @@ namespace m1{
         private:
 
         void LogImpl(const std::string& message, m1::LogLevel level){
+            std::lock_guard<std::mutex> lgMutex(mutex);
             m1::Log log = m1::Log(message, timeSource->CurrentTime(), level);
             for(int i = 0; i < logDestinations.size(); ++i){
                 logDestinations[i]->Log(log);
             }
         }
 
+        std::mutex mutex;
         std::shared_ptr<ITimeSource> timeSource;
         std::vector<std::shared_ptr<ILogDestination>> logDestinations;
     };
