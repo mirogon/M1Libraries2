@@ -1,5 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
-#include "../include/Random.h"
+#include "Random/Random.h"
 
 TEST_CASE("NewRandomIsValid"){
     m1::Random random;

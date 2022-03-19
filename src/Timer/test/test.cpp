@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <thread>
-#include "../include/Timer.h"
+#include "Timer/Timer.h"
 
 TEST_CASE("NewTimerValid"){
     m1::Timer timer = m1::Timer();

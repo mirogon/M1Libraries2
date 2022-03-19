@@ -3,11 +3,11 @@
 #include <chrono>
 #include <thread>
 #include <filesystem>
-#include "../include/Logger.h"
-#include "../include/LogDestination/ILogDestination.h"
-#include "../include/LogDestination/ConsoleLogDestination.h"
-#include "../include/LogDestination/FileLogDestination.h"
-#include "../include/TimeSource/ITimeSource.h"
+#include "Logger/Logger.h"
+#include "Logger/LogDestination/ILogDestination.h"
+#include "Logger/LogDestination/ConsoleLogDestination.h"
+#include "Logger/LogDestination/FileLogDestination.h"
+#include "Logger/TimeSource/ITimeSource.h"
 
 class TestLogDestination : public m1::ILogDestination{
     public:
