@@ -5,16 +5,16 @@
 namespace m1{
     
     enum class LogLevel{
-        NONE = 0,
-        WARNING = 2,
-        ERROR = 3
+        LL_NONE = 0,
+        LL_WARNING = 2,
+        LL_ERROR = 3
     };
 
     inline std::string LogLevelToString(LogLevel l){
         switch(l){
-            case LogLevel::NONE: return "None";
-            case LogLevel::WARNING: return "Warning";
-            case LogLevel::ERROR: return "Error";
+            case LogLevel::LL_NONE: return "None";
+            case LogLevel::LL_WARNING: return "Warning";
+            case LogLevel::LL_ERROR: return "Error";
         }
     }
 
@@ -23,7 +23,7 @@ namespace m1{
 
         Log() = delete;
 
-        Log(const std::string& message, Timestamp timeStamp, LogLevel level = LogLevel::NONE):
+        Log(const std::string& message, Timestamp timeStamp, LogLevel level = LogLevel::LL_NONE):
             timeStamp{timeStamp}
         {
             this->message = message;

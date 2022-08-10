@@ -27,15 +27,15 @@ namespace m1{
         }
 
         void Log(const std::string& message){
-            LogImpl(message, m1::LogLevel::NONE);
+            LogImpl(message, m1::LogLevel::LL_NONE);
         }
 
         void LogWarning(const std::string& message){
-            LogImpl(message, m1::LogLevel::WARNING);
+            LogImpl(message, m1::LogLevel::LL_WARNING);
         }
 
         void LogError(const std::string& message){
-            LogImpl(message, m1::LogLevel::ERROR);
+            LogImpl(message, m1::LogLevel::LL_ERROR);
         }
 
         std::vector<std::shared_ptr<ILogDestination>> LogDestinations(){

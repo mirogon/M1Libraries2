@@ -70,13 +70,13 @@ TEST_CASE("LogLevelEqualsLogFunc"){
     logger.AddLogDestination(logDest);
 
     logger.Log("Info log");
-    REQUIRE(logDest->logs.back().Level() == m1::LogLevel::NONE);
+    REQUIRE(logDest->logs.back().Level() == m1::LogLevel::LL_NONE);
 
     logger.LogWarning("Warning log");
-    REQUIRE(logDest->logs.back().Level() == m1::LogLevel::WARNING);
+    REQUIRE(logDest->logs.back().Level() == m1::LogLevel::LL_WARNING);
 
     logger.LogError("Error log");
-    REQUIRE(logDest->logs.back().Level() == m1::LogLevel::ERROR);
+    REQUIRE(logDest->logs.back().Level() == m1::LogLevel::LL_ERROR);
 }
 
 
