@@ -1,5 +1,6 @@
 #pragma once
 #include <thread>
+#include <vector>
 #include <mutex>
 #include "LogDestination/ILogDestination.h"
 #include "LogDestination/ConsoleLogDestination.h"
@@ -8,7 +9,7 @@
 namespace m1{
     class Logger{
         public:
-        
+
         Logger(std::shared_ptr<ITimeSource> timeSource = std::make_shared<StdTimeSource>()){
             this->timeSource = timeSource;
         }
